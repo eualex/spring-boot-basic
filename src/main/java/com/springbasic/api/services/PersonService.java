@@ -1,42 +1,59 @@
 package com.springbasic.api.services;
 
+import com.springbasic.api.exception.ResourceNotFoundException;
 import com.springbasic.api.model.Person;
+import com.springbasic.api.repository.PersonRepository;
 import com.springbasic.api.services.contracts.IPersonService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonService implements IPersonService {
 
-     public Person findPersonById(String id) {
-         Person person = mockPerson(id);
+    private final PersonRepository personRepository;
 
-         return person;
-     }
-
-    public List<Person> findAllPerson() {
-         List<Person> persons = new ArrayList<>();
-
-        for (int i = 0; i < 8; i++) {
-            Person person = mockPerson(Integer.toString(i + 1));
-
-            persons.add(person);
-        }
-
-        return persons;
+    @Autowired
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
-    private Person mockPerson(String id) {
-        Person person = new Person();
+     public Person findById(Long id) {
+         return personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+             "Nenhum registro foi encontrado para este ID!"
+         ));
+     }
 
-        person.setId(Long.parseLong(id));
-        person.setFirstName("Pepeto");
-        person.setLastName("Vava");
-        person.setGender("Male");
-        person.setAddress("Icebox - VAVA");
+    public List<Person> findAll() {
+        return personRepository.findAll();
+    }
 
-        return person;
+    public Person create(Person person) {
+        return personRepository.save(person);
+    }
+
+    public Person update(Person person, Long id) {
+        Person personEntity = personRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Nenhum registro foi encontrado para este ID!")
+        );
+
+        personEntity.setFirstName(person.getFirstName());
+        personEntity.setLastName(person.getLastName());
+        personEntity.setAddress(person.getAddress());
+        personEntity.setGender(person.getGender());
+
+        return personRepository.save(personEntity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Person personEntity = personRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Nenhum registro foi encontrado para este ID!")
+        );
+
+        personRepository.delete(personEntity);
     }
 }

@@ -5,6 +5,9 @@ import com.springbasic.api.model.Person;
 import java.util.List;
 
 public interface IPersonService {
-    Person findPersonById(String id);
-    List<Person> findAllPerson();
+    Person findById(Long id);
+    List<Person> findAll();
+    Person create(Person person);
+    Person update(Person person, Long id);
+    void delete(Long id);
 }

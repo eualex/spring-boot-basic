@@ -1,6 +1,7 @@
 package com.springbasic.api.exception.handler;
 
 import com.springbasic.api.exception.ExceptionResponse;
+import com.springbasic.api.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,18 +19,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 "internal.error",
                 "Ocorreu um erro desconhecido",
-                500
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
         );
 
         return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-//    @ExceptionHandler(PersonException.class)
-//    public final ResponseEntity<ExceptionResponse> handlePersonExceptionExceptions(Exception e, WebRequest req) {
-//        ExceptionResponse exceptionResponse = new ExceptionResponse(
-//                "person.not.found", "Person not found", HttpStatus.NOT_FOUND
-//        );
-//
-//        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public final ResponseEntity<ExceptionResponse> handleResourceNotFoundException(Exception e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                "item.not.found",
+                e.getMessage(),
+                HttpStatus.NOT_FOUND.value()
+        );
+
+        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
 }

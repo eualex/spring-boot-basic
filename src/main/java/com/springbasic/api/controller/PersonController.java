@@ -4,11 +4,9 @@ import com.springbasic.api.model.Person;
 
 import com.springbasic.api.services.contracts.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,16 +22,37 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findPersonById(@PathVariable String id) throws Exception {
-        Person person = personService.findPersonById(id);
+    public ResponseEntity<Person> findById(@PathVariable Long id) throws Exception {
+        Person person = personService.findById(id);
 
         return ResponseEntity.ok(person);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Person>> findAllPerson() {
-        List<Person> persons = personService.findAllPerson();
+    @GetMapping
+    public ResponseEntity<List<Person>> findAll() {
+        List<Person> persons = personService.findAll();
 
         return ResponseEntity.ok(persons);
+    }
+
+    @PostMapping
+    public ResponseEntity<Person> create(@RequestBody Person person) {
+        Person personResponse = personService.create(person);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(personResponse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> update(@RequestBody Person person, @PathVariable Long id) {
+        Person personResponse = personService.update(person, id);
+
+        return ResponseEntity.ok(personResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id) {
+        personService.delete(id);
+
+        return ResponseEntity.ok().build();
     }
 }
