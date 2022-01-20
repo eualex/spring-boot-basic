@@ -1,7 +1,6 @@
 package com.springbasic.api.controller;
 
-import com.springbasic.api.model.Person;
-
+import com.springbasic.api.dto.PersonDTO;
 import com.springbasic.api.services.contracts.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,29 +21,29 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable Long id) throws Exception {
-        Person person = personService.findById(id);
+    public ResponseEntity<PersonDTO> findById(@PathVariable Long id) throws Exception {
+        PersonDTO person = personService.findById(id);
 
         return ResponseEntity.ok(person);
     }
 
     @GetMapping
-    public ResponseEntity<List<Person>> findAll() {
-        List<Person> persons = personService.findAll();
+    public ResponseEntity<List<PersonDTO>> findAll() {
+        List<PersonDTO> persons = personService.findAll();
 
         return ResponseEntity.ok(persons);
     }
 
     @PostMapping
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        Person personResponse = personService.create(person);
+    public ResponseEntity<PersonDTO> create(@RequestBody PersonDTO person) {
+        PersonDTO personResponse = personService.create(person);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(personResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> update(@RequestBody Person person, @PathVariable Long id) {
-        Person personResponse = personService.update(person, id);
+    public ResponseEntity<PersonDTO> update(@RequestBody PersonDTO person, @PathVariable Long id) {
+        PersonDTO personResponse = personService.update(person, id);
 
         return ResponseEntity.ok(personResponse);
     }
